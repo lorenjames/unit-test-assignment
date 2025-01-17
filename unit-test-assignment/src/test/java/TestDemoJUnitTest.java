@@ -32,6 +32,17 @@ class TestDemoJUnitTest {
 		}
 
 	}
+	
+	@ParameterizedTest
+	@MethodSource("TestDemoJUnitTest#argumentsForMultiplyPositive")
+	void assertThatTwoPositiveNumbersAreMultipliedCorrectly(int a, int b, int expected, boolean expectException) {
+		
+		if (!expectException) { //asserts that the product of two positive numbers matches the expected value
+			assertThat(testDemo.multiplyPositive(a, b)).isEqualTo(expected);
+		} else { //else assert that an exception is thrown when one or both inputs are negative
+			assertThatThrownBy(() -> testDemo.multiplyPositive(a, b)).isInstanceOf(IllegalArgumentException.class);
+		}
+	}
 
 	public static Stream<Arguments> argumentsForAddPositive() {
 
@@ -44,10 +55,12 @@ class TestDemoJUnitTest {
 	}
 
 	public static Stream<Arguments> argumentsForMultiplyPositive() {
-		return Stream.of(
+		return Stream.of( //returns a stream of arguments containing test cases
 
-				arguments(1, 1, 1, false), arguments(2, 5, 10, false), arguments(1, 0, 0, false),
-				arguments(-1, 5, 5, true)
+				arguments(1, 1, 1, false), //tests that both numbers are positive and the result is true
+				arguments(2, 5, 10, false), //tests that both numbers are positive and the result is true
+				arguments(1, 0, 0, false), //one number is zero, result is zero
+				arguments(-1, 5, 5, true) // tests with one number being negative which results in an expected exception
 
 		);
 
